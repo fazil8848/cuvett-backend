@@ -8,7 +8,7 @@ const jobRoutes = require("./routes/jobsRoutes");
 const app = express();
 app.use(
   cors({
-    origin: "https://cuvett-fronend.vercel.app/",
+    origin: "https://cuvett-fronend.vercel.app",
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     credentials: true,
   })
