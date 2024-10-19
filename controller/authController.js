@@ -3,6 +3,7 @@ const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const twilio = require("twilio");
+const { otpEmailTemplate } = require("../utils/mailTemplate");
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
@@ -46,9 +47,9 @@ const registerCompany = async (req, res) => {
     await transporter
       .sendMail({
         from: process.env.EMAIL,
-        to: companyEmail,
-        subject: "Verify your account",
-        html: `<p>Your OTP is: <strong>${otpMail}</strong></p>`,
+        to: email,
+        subject: "Verify Your Account",
+        html: otpEmailTemplate(otp),
       })
       .then(() => console.log("mail send"))
       .catch((error) => console.error(error));
@@ -110,6 +111,7 @@ const verifyOtp = async (req, res) => {
         ? "Both OTPs verified successfully!"
         : `${type} OTP verified successfully!`,
       token: token || null,
+      userName: user.name,
     });
   } catch (error) {
     console.error("Error verifying OTP:", error);
@@ -119,8 +121,7 @@ const verifyOtp = async (req, res) => {
 
 const sendOTP = async (req, res) => {
   const { email } = req.body;
-  const otp = Math.floor(100000 + Math.random() * 900000); // Generate a 6-digit OTP
-
+  const otp = Math.floor(100000 + Math.random() * 900000);
   try {
     const user = await User.findOne({ companyEmail: email });
     if (!user) {
@@ -130,8 +131,8 @@ const sendOTP = async (req, res) => {
     await transporter.sendMail({
       from: process.env.EMAIL,
       to: email,
-      subject: "Verify your account",
-      html: `<p>Your OTP is: <strong>${otp}</strong></p>`,
+      subject: "Login to your Account",
+      html: otpEmailTemplate(otp),
     });
 
     let token;
@@ -172,10 +173,14 @@ const login = async (req, res) => {
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
-    res.status(200).json({ token });
+    res.status(200).json({ token, userName: user.name });
   } catch (error) {
     res.status(500).json({ error: "Server error" });
   }
 };
 
-module.exports = { registerCompany, login, verifyOtp, sendOTP };
+const logout = async (req, res) => {
+  res.status(200).json({ message: "Logout successful" });
+};
+
+module.exports = { registerCompany, login, verifyOtp, sendOTP, logout };

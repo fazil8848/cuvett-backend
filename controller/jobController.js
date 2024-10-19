@@ -69,7 +69,11 @@ const sendMailToCandidates = async (req, res) => {
   const { jobId, emails } = req.body;
 
   try {
-    const job = await Jobs.findById(jobId);
+    const job = await Jobs.findById(jobId).populate({
+      path: "postedBy",
+      select: "companyName ",
+      model: "User",
+    });
     if (!job) {
       return res.status(404).json({ error: "Job not found" });
     }
