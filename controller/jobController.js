@@ -74,6 +74,7 @@ const sendMailToCandidates = async (req, res) => {
       select: "companyName ",
       model: "User",
     });
+
     if (!job) {
       return res.status(404).json({ error: "Job not found" });
     }

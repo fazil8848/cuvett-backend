@@ -120,7 +120,7 @@ const emailContentExporter = (job) => {
         </div>
         <div class="content">
             <p>Hello Aspiring Professional,</p>
-            <p>We're thrilled to present an exceptional opportunity at <span class="highlight">${job.companyName}</span> that seems tailor-made for your talents!</p>
+            <p>We're thrilled to present an exceptional opportunity at <span class="highlight">${job.postedBy.companyName}</span> that seems tailor-made for your talents!</p>
             
             <div class="job-details">
                 <h2>🌟 Exciting Position Details</h2>
@@ -166,7 +166,7 @@ const emailContentExporter = (job) => {
 `;
 };
 
-const otpEmailTemplate =(otp)=> `
+const otpEmailTemplate = (otp) => `
 <!DOCTYPE html>
 <html lang="en">
 <head>
