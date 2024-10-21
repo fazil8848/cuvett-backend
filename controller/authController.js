@@ -47,9 +47,9 @@ const registerCompany = async (req, res) => {
     await transporter
       .sendMail({
         from: process.env.EMAIL,
-        to: email,
+        to: companyEmail,
         subject: "Verify Your Account",
-        html: otpEmailTemplate(otp),
+        html: otpEmailTemplate(otpMail),
       })
       .then(() => console.log("mail send"))
       .catch((error) => console.error(error));
